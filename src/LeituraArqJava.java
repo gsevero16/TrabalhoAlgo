@@ -1,3 +1,4 @@
+package src;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,10 +21,10 @@ public class LeituraArqJava {
             String line = null;
             while( (line = reader.readLine()) != null) {
                 System.out.println("--- Inicio expressao");
-                String v[] = line.split(" "); // divide a string pelo espaco em branco
+                String[] v = line.split(" "); // divide a string pelo espaco em branco
                 for(String s : v) {
-                    System.out.println(s);   
-                }    
+                    System.out.println(s);
+                }
                 System.out.println("--- Fim expressao");
             }
             reader.close();
