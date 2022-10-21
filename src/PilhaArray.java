@@ -2,10 +2,10 @@ package src;
 
 import java.util.EmptyStackException;
 
-public class LinkedStackCalculator {
+public class PilhaArray {
     private class Node {
 
-        public Integer element;
+        public char element;
         public Node next;
 
         /**
@@ -13,7 +13,7 @@ public class LinkedStackCalculator {
          *
          * @param element the element
          */
-        public Node(Integer element) { // constructor without next
+        public Node(char element) { // constructor without next
             this.element = element;
             next = null;
         }
@@ -24,7 +24,7 @@ public class LinkedStackCalculator {
          * @param element the element
          * @param next    the next node
          */
-        public Node(Integer element, Node next) { // constructor with next
+        public Node(char element, Node next) { // constructor with next
             this.element = element;
             this.next = next;
         }
@@ -36,7 +36,7 @@ public class LinkedStackCalculator {
     /**
      * Instantiates a new Linked stack calculator.
      */
-    public LinkedStackCalculator() {
+    public PilhaArray() {
         top = null; 
         count = 0;
     }
@@ -47,13 +47,13 @@ public class LinkedStackCalculator {
      *
      * @return the integer
      */
-    public Integer pop(){
+    public char pop(){
         if(count == 0){
             throw new EmptyStackException(); // if stack is empty, throw empty stack error
         }
 
         count--;
-        Integer aux = top.element; // stores removed element so it can be returned
+        char aux = top.element; // stores removed element so it can be returned
         top = top.next; // second element is now the top of the stack
 
         return aux; // returns removed (popped) element
@@ -82,7 +82,7 @@ public class LinkedStackCalculator {
      *
      * @return the integer
      */
-    public Integer top(){
+    public char top(){
         if(isEmpty()){
             throw new EmptyStackException();
         }
@@ -94,7 +94,7 @@ public class LinkedStackCalculator {
      *
      * @param e the element to push
      */
-    public void push (Integer e){
+    public void push (char e){
         Node aux = new Node(e);
         aux.next = top;
         top = aux;
