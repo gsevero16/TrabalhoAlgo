@@ -4,6 +4,7 @@ import java.util.EmptyStackException;
 
 public class Calculadora {
     static PilhaArray pilhaArray = new PilhaArray();
+    static int maxSize = 0;
 
     public static int fazOperacao(String s){
         int res = 0;
@@ -22,11 +23,14 @@ public class Calculadora {
 
             else{
                 pilhaArray.push(c);
+                if(pilhaArray.size() > maxSize){
+                    setMaxSize(pilhaArray.size());
+                }
+                else{
+                    maxSize++;
+                }
             }
         }
-
-
-
         return res;
     }
 
@@ -91,6 +95,11 @@ public class Calculadora {
         return res;
     }
 
+    public static int getMaxSize() {
+        return maxSize;
+    }
 
-
+    public static void setMaxSize(int maxSize) {
+        Calculadora.maxSize = maxSize;
+    }
 }

@@ -33,6 +33,8 @@ public class LeituraArqJava {
             System.out.println("O resultado da expressão " + aux + " é: " + result); //tem q exibir o resultado?
             aux++;
         }
+        System.out.println("Maior tamanho que a pilha alcançou: " + Calculadora.getMaxSize());
+
 
     }
 
