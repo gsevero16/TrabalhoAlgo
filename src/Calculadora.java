@@ -7,7 +7,6 @@ public class Calculadora {
 
     public static int fazOperacao(String s){
         int res = 0;
-        char aux; // guarda o fechador (para poder comparar com o abridor '(' ou '[' ou '{' )
 
         if(s.length() == 0){ // se pilha estiver vazia, retorna erro de pilha vazia
             throw new EmptyStackException();
@@ -17,8 +16,7 @@ public class Calculadora {
             char c = s.charAt(i);
 
             if(isCloser(c)){
-                aux = c;
-                res = findPairAndCalculate(aux); // remove topo da lista até encontrar o par do fechador e calcula o que tiver no caminho
+                res = findPairAndCalculate(c); // remove topo da lista até encontrar o par do fechador e calcula o que tiver no caminho
                 pilhaArray.push((char) res); // coloca o resultado de volta na pilha (não acho que essa seja a forma correta)
             }
 
@@ -60,7 +58,7 @@ public class Calculadora {
         int num1 = 0;
         int num2 = 0;
         char op = '\0';
-        int res = 0;
+        int res;
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
 
         switch (closer) {
@@ -88,8 +86,6 @@ public class Calculadora {
             else{
                pilhaArray.pop();
             }
-
-            pilhaArray.pop();
         }
         res = calculator(num1, num2, op);
         return res;
