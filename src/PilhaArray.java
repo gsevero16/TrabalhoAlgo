@@ -5,7 +5,7 @@ import java.util.EmptyStackException;
 public class PilhaArray {
     private class Node {
 
-        public char element;
+        public String element;
         public Node next;
 
         /**
@@ -13,7 +13,7 @@ public class PilhaArray {
          *
          * @param element the element
          */
-        public Node(char element) { // constructor without next
+        public Node(String element) { // constructor without next
             this.element = element;
             next = null;
         }
@@ -24,7 +24,7 @@ public class PilhaArray {
          * @param element the element
          * @param next    the next node
          */
-        public Node(char element, Node next) { // constructor with next
+        public Node(String element, Node next) { // constructor with next
             this.element = element;
             this.next = next;
         }
@@ -37,23 +37,22 @@ public class PilhaArray {
      * Instantiates a new Linked stack calculator.
      */
     public PilhaArray() {
-        top = null; 
+        top = null;
         count = 0;
     }
-
 
     /**
      * Pop integer.
      *
      * @return the integer
      */
-    public char pop(){
-        if(count == 0){
+    public String pop() {
+        if (count == 0) {
             throw new EmptyStackException(); // if stack is empty, throw empty stack error
         }
 
         count--;
-        char aux = top.element; // stores removed element so it can be returned
+        String aux = top.element; // stores removed element so it can be returned
         top = top.next; // second element is now the top of the stack
 
         return aux; // returns removed (popped) element
@@ -64,7 +63,7 @@ public class PilhaArray {
      *
      * @return the boolean
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return count == 0;
     }
 
@@ -73,7 +72,7 @@ public class PilhaArray {
      *
      * @return the int
      */
-    public int size(){
+    public int size() {
         return count;
     }
 
@@ -82,8 +81,8 @@ public class PilhaArray {
      *
      * @return the integer
      */
-    public char top(){
-        if(isEmpty()){
+    public String top() {
+        if (isEmpty()) {
             throw new EmptyStackException();
         }
         return top.element;
@@ -92,24 +91,21 @@ public class PilhaArray {
     /**
      * Push element into stack.
      *
-     * @param e the element to push
+     * @param res the element to push
      */
-    public void push (char e){
-        Node aux = new Node(e);
+    public void push(String res) {
+        Node aux = new Node(res);
         aux.next = top;
         top = aux;
         count++;
     }
 
-
     /**
      * Clear stack.
      */
-    public void clear(){
+    public void clear() {
         top = null;
         count = 0;
     }
 
-
 }
-

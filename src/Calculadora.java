@@ -6,19 +6,20 @@ public class Calculadora {
     static PilhaArray pilhaArray = new PilhaArray();
     static int maxSize = 0;
 
-    public static int fazOperacao(String s){
-        int res = 0;
+    public static double fazOperacao(String[] s){
+        double res = 0;
 
-        if(s.length() == 0){ // se pilha estiver vazia, retorna erro de pilha vazia
+        if(s.length == 0){ // se pilha estiver vazia, retorna erro de pilha vazia
             throw new EmptyStackException();
         }
 
-        for(int i = 0; i < s.length(); i++){ // adiciona elementos à pilha até encontrar um fechador
-            char c = s.charAt(i);
+        for (String c : s){ // adiciona elementos à pilha até encontrar um fechador
+            //String c = t;
+            
 
             if(isCloser(c)){
                 res = findPairAndCalculate(c); // remove topo da lista até encontrar o par do fechador e calcula o que tiver no caminho
-                pilhaArray.push((char) res); // coloca o resultado de volta na pilha (não acho que essa seja a forma correta)
+                pilhaArray.push(Double.toString(res)); // coloca o resultado de volta na pilha (não acho que essa seja a forma correta)
             }
 
             else{
@@ -30,56 +31,68 @@ public class Calculadora {
                     maxSize++;
                 }
             }
+            
         }
+        pilhaArray.clear();
         return res;
     }
 
-    private static boolean isCloser(char c){ // checa se o char é um fechador (de parenteses, chaves ou colchetes)
-        return c == ')' || c == ']' || c == '}';
+    private static boolean isCloser(String c){ // checa se o char é um fechador (de parenteses, chaves ou colchetes)
+        
+        return c.equals(")") || c.equals("]" )||  c.equals("}");
     }
 
-    private static boolean isNumber(char c){ // checa se o char atual é um número
-        return Character.isDigit(c);
+    private static boolean isNumber(String string){ // checa se o char atual é um número
+        //return Double.parseInt(string) ? true: false;
+
+        //return string.chars().allMatch(Character::isDigit);
+        try {
+            Double.parseDouble(string);
+            return true;
+          } catch(NumberFormatException e){
+            return false;
+          }
     }
 
-    private static boolean isOperator(char c){ // checa se o char atual é um operador
-        return c == '+' || c == '-' || c == '*' || c == '/' || c =='^';
+    private static boolean isOperator(String string){ // checa se o char atual é um operador
+        return string.equals("+") || string.equals("-") ||
+        string.equals("*") || string.equals("/") || string.equals("^");
     }
 
-    private static int calculator(int num1, int num2, char op){
+    private static double calculator(double num1, double num2, String op){
         return switch (op) {
-            case '+' -> num1 + num2;
-            case '-' -> num1 - num2;
-            case '*' -> num1 * num2;
-            case '/' -> num1 / num2;
-            case '^' -> num1 ^ num2;
-            default -> throw new IllegalArgumentException("Invalid Operator");
+            case "+" -> num1 + num2;
+            case "-" -> num1 - num2;
+            case "*" -> num1 * num2;
+            case "/" -> num1 / num2;
+            case "^" -> Math.pow(num1, num2);
+            default -> -1;
         };
     }
 
-    private static int findPairAndCalculate(char closer){ // limpa (com ‘pop’) a pilha até encontrar o par do char fechador e calcula
-        char pair;
-        int num1 = 0;
-        int num2 = 0;
-        char op = '\0';
-        int res;
+    private static double findPairAndCalculate(String c){ // limpa (com ‘pop’) a pilha até encontrar o par do char fechador e calcula
+        String pair = "";
+        double num1 = 0;
+        double num2 = 0;
+        String op = "";
+        double res;
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
 
-        switch (closer) {
-            case ')' -> pair = '(';
-            case ']' -> pair = '[';
-            case '}' -> pair = '{';
-            default -> throw new IllegalArgumentException("Invalid Element"); // se o char não for um fechador, retorna um erro
+        switch (c) {
+            case ")" -> pair = "(";
+            case "]" -> pair = "[";
+            case "}" -> pair = "{";
+            default -> System.out.println("Invalid Element"); // se o char não for um fechador, retorna um erro
         }
 
-        while(pilhaArray.top() != pair){
+        while(!pilhaArray.top().equals(pair)){
             if(isNumber(pilhaArray.top())){ // se o char for um número
                 if(assignedNum2){ // se o char for número e o num2 já fora usado
-                    num1 = pilhaArray.pop(); // coloca o outro número na variável num1
+                    num1 = Double.parseDouble(pilhaArray.pop()); // coloca o outro número na variável num1
                 }
 
                 else{ // se o num2 (número depois do operador) ainda não tiver sido alterado
-                    num2 = pilhaArray.pop(); // coloca o número atual na variável num2
+                    num2 = Double.parseDouble(pilhaArray.pop()); // coloca o número atual na variável num2
                     assignedNum2 = true;
                 }
             }
@@ -92,6 +105,7 @@ public class Calculadora {
             }
         }
         res = calculator(num1, num2, op);
+        
         return res;
     }
 
