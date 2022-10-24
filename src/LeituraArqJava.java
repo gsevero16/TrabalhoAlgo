@@ -23,7 +23,7 @@ public class LeituraArqJava {
                 for (String s : v) {
                     phrase = s.split(" ");
                     double result = Calculadora.fazOperacao(phrase);
-                    System.out.println("O resultado da expressão " + aux + " é: " + result + " - tamanho máximo da pilha: " + Calculadora.getMaxSizeReached());
+                    System.out.println("O resultado da expressão " + aux + " é: " + result + " - tamanho máximo da pilha: " + Calculadora.getMaxSizeReached() + "\n");
                     Calculadora.setMaxSizeReached(0);
                     aux++;
                 }

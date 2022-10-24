@@ -2,9 +2,11 @@ package src;
 
 import java.util.EmptyStackException;
 
+
 public class Calculadora {
     private static final PilhaArray pilhaArray = new PilhaArray();
     private static int maxSizeReached = 0; // maior tamanho que a pilha atingiu
+
     // contadores para checar se tem a mesma quantidade de abridores e fechadores
     private static int parentesesAbre = 0;
     private static int colchetesAbre = 0;
@@ -22,7 +24,8 @@ public class Calculadora {
             }
 
         }catch(Exception e){
-            System.out.println("\nErro de sintaxe.");
+            System.out.println("Erro de sintaxe.");
+            clearCounters(); // limpa os contadores
             return -1;
         }
 
@@ -151,6 +154,18 @@ public class Calculadora {
         return (parentesesAbre == parentesesFecha) && (chavesAbre == chavesFecha) && (colchetesAbre == colchetesFecha);
     }
 
+    //TODO método para checar se tem num1, operador e num2 antes de encontrar outro abridor
+    // por exemplo: (54 * ) <- falta um número depois do 54, portanto deve dar erro de sintaxe
+
+    private static void clearCounters(){
+        setParentesesAbre(0);
+        setColchetesAbre(0);
+        setChavesAbre(0);
+        setParentesesFecha(0);
+        setColchetesFecha(0);
+        setChavesFecha(0);
+    }
+
     private static boolean isParentesesAbre(String str){
         return str.equals("(");
     }
@@ -164,7 +179,6 @@ public class Calculadora {
         return str.equals("]");
     }
 
-
     // Getters e setters
     public static int getMaxSizeReached() {
         return maxSizeReached;
@@ -174,4 +188,27 @@ public class Calculadora {
         Calculadora.maxSizeReached = maxSizeReached;
     }
 
+    public static void setParentesesAbre(int parentesesAbre) {
+        Calculadora.parentesesAbre = parentesesAbre;
+    }
+
+    public static void setColchetesAbre(int colchetesAbre) {
+        Calculadora.colchetesAbre = colchetesAbre;
+    }
+
+    public static void setChavesAbre(int chavesAbre) {
+        Calculadora.chavesAbre = chavesAbre;
+    }
+
+    public static void setParentesesFecha(int parentesesFecha) {
+        Calculadora.parentesesFecha = parentesesFecha;
+    }
+
+    public static void setColchetesFecha(int colchetesFecha) {
+        Calculadora.colchetesFecha = colchetesFecha;
+    }
+
+    public static void setChavesFecha(int chavesFecha) {
+        Calculadora.chavesFecha = chavesFecha;
+    }
 }
