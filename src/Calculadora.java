@@ -7,6 +7,9 @@ public class Calculadora {
     private static final PilhaArray pilhaArray = new PilhaArray();
     private static int maxSizeReached = 0; // maior tamanho que a pilha atingiu
     private static boolean erroSintaxe = false; // usado para checar se ocorreu erro de sintaxe
+    private static boolean erroAbreFecha = false; // usado para checar se o erro envolve abres e fechas
+    private static boolean erroOperador = false; // usado para checar se o erro envolve o operador
+    private static boolean erroOperando = false; // usado para checar se o erro envolve um dos operandos (num1 e num2)
 
     // contadores para checar se tem a mesma quantidade de abridores e fechadores
     private static int parentesesAbre = 0;
@@ -25,6 +28,7 @@ public class Calculadora {
             }
 
         } catch (Exception e) {
+            setErroAbreFecha(true);
             setErroSintaxe(true);
             clearCounters(); // limpa os contadores
             return -1;
@@ -113,6 +117,15 @@ public class Calculadora {
                 }
 
             } catch (Exception e) {
+                if(!assignedNum2){
+                    setErroOperando(true);
+                }
+                else if(!assignedOperator){
+                    setErroOperador(true);
+                }
+                else if(!assignedNum1){
+                    setErroOperando(true);
+                }
                 setErroSintaxe(true);
                 setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional,)
                 return -1; // retorna -1 genérico (caso o resultado do cálculo seja -1 mesmo, não vai estar acompanhado da mensagem de
@@ -232,5 +245,29 @@ public class Calculadora {
 
     public static void setErroSintaxe(boolean erroSintaxe) {
         Calculadora.erroSintaxe = erroSintaxe;
+    }
+
+    public static boolean isErroAbreFecha() {
+        return erroAbreFecha;
+    }
+
+    public static void setErroAbreFecha(boolean erroAbreFecha) {
+        Calculadora.erroAbreFecha = erroAbreFecha;
+    }
+
+    public static boolean isErroOperando() {
+        return erroOperando;
+    }
+
+    public static void setErroOperando(boolean erroOperando) {
+        Calculadora.erroOperando = erroOperando;
+    }
+
+    public static boolean isErroOperador() {
+        return erroOperador;
+    }
+
+    public static void setErroOperador(boolean erroOperador) {
+        Calculadora.erroOperador = erroOperador;
     }
 }

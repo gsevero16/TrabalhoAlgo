@@ -27,14 +27,28 @@ public class LeituraArqJava {
                     double result = Calculadora.fazOperacao(phrase); // calcula o resultado
 
                     if(Calculadora.isErroSintaxe()){ // se a equação apresentou erro de sintaxe
-                        System.out.println("Expressão " + aux + " apresentou um erro de sintaxe.\n");
+                        if(Calculadora.isErroAbreFecha()){
+                            System.out.println("Expressão " + aux + " apresentou um erro nos abres e fechas.\n");
+                        }
+                        else if(Calculadora.isErroOperando()){
+                            System.out.println("Expressão " + aux + " apresentou um erro em um dos operandos.\n");
+                        }
+                        else if(Calculadora.isErroOperador()){
+                            System.out.println("Expressão " + aux + " apresentou um erro no operador.\n");
+                        }
+                        else{
+                            System.out.println("Expressão " + aux + " apresentou um erro de sintaxe.\n");
+                        }
                     }
                     else{ // se não apresentou erro de sintaxe
                         System.out.println("O resultado da expressão " + aux + " é: " + result + " - tamanho máximo da pilha: " + Calculadora.getMaxSizeReached() + "\n");
                     }
 
                     Calculadora.setMaxSizeReached(0); // reseta o tamanho máximo da pilha (para ir para a próxima expressão)
-                    Calculadora.setErroSintaxe(false); // reseta o estado de erro (caso tenha sido encontrado)
+                    Calculadora.setErroSintaxe(false); // reseta o estado de erro
+                    Calculadora.setErroAbreFecha(false); // reseta o estado de erro
+                    Calculadora.setErroOperador(false); // reseta o estado de erro
+                    Calculadora.setErroOperando(false); // reseta o estado de erro
                     aux++;
                 }
             }
