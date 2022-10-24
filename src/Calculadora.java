@@ -89,6 +89,10 @@ public class Calculadora {
         double res;
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
 
+        //TODO uma possibilidade para determinar se tem num1 operador num2 (olhar outro TODO)
+        boolean assignedNum1 = false;
+        boolean assignedOperator = false;
+
         if(pilhaArray.size() > maxSizeReached){ // compara o tamanho atual da pilha e o maior tamanho atingido previamente
             setMaxSizeReached(pilhaArray.size()); // se o tamanho atual for maior que o maior anterior, altera o valor da variável maxSizeReached
         }
