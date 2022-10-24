@@ -86,7 +86,6 @@ public class Calculadora {
         }
 
 
-        //TODO: melhorar essa implementação (usando outros métodos) para reduzir complexidade do método (está funcionando, mas não é ideal)
         while (!foundPair) { // enquanto não achar o par do fechador (no caso o abre)
             try {
                 if (pilhaArray.top().equals(pair)) { // encontrou o par
@@ -117,19 +116,19 @@ public class Calculadora {
                 }
 
             } catch (Exception e) {
-                if(!assignedNum2){
+                if(!assignedNum2){ // erro no segundo operando
                     setErroOperando(true);
                 }
-                else if(!assignedOperator){
+                else if(!assignedOperator){ // erro no operador
                     setErroOperador(true);
                 }
-                else if(!assignedNum1){
+                else if(!assignedNum1){ // erro no primeiro operando
                     setErroOperando(true);
                 }
-                setErroSintaxe(true);
-                setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional,)
-                return -1; // retorna -1 genérico (caso o resultado do cálculo seja -1 mesmo, não vai estar acompanhado da mensagem de
-                            // erro de sintaxe)
+                setErroSintaxe(true); // se chegou aqui, teve algum erro de sintaxe (ou operador/operando)
+                setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional)
+                return -1; // retorna -1 genérico que não aparece na print (caso o resultado do cálculo seja -1 mesmo, não vai estar
+                           // acompanhado da mensagem de erro de sintaxe)
             }
 
         }
@@ -269,5 +268,12 @@ public class Calculadora {
 
     public static void setErroOperador(boolean erroOperador) {
         Calculadora.erroOperador = erroOperador;
+    }
+
+    public static void clearErros(){
+        setErroOperando(false);
+        setErroOperador(false);
+        setErroSintaxe(false);
+        setErroAbreFecha(false);
     }
 }

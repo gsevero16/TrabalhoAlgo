@@ -45,10 +45,7 @@ public class LeituraArqJava {
                     }
 
                     Calculadora.setMaxSizeReached(0); // reseta o tamanho máximo da pilha (para ir para a próxima expressão)
-                    Calculadora.setErroSintaxe(false); // reseta o estado de erro
-                    Calculadora.setErroAbreFecha(false); // reseta o estado de erro
-                    Calculadora.setErroOperador(false); // reseta o estado de erro
-                    Calculadora.setErroOperando(false); // reseta o estado de erro
+                    Calculadora.clearErros(); // reset dos estados de erro
                     aux++;
                 }
             }
