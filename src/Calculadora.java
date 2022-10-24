@@ -6,7 +6,7 @@ import java.util.EmptyStackException;
 public class Calculadora {
     private static final PilhaArray pilhaArray = new PilhaArray();
     private static int maxSizeReached = 0; // maior tamanho que a pilha atingiu
-    private static boolean erroSintaxe = false;
+    private static boolean erroSintaxe = false; // usado para checar se ocorreu erro de sintaxe
 
     // contadores para checar se tem a mesma quantidade de abridores e fechadores
     private static int parentesesAbre = 0;
@@ -19,7 +19,7 @@ public class Calculadora {
     public static double fazOperacao(String[] s) {
         double res = 0;
 
-        try {
+        try { // checa se têm o mesmo número de abridores e fechadores
             if (!checkOpenersAndClosers(s)) {
                 throw new Exception();
             }
@@ -48,69 +48,75 @@ public class Calculadora {
         return res;
     }
 
-
     private static double calculator(double num1, double num2, String op) { // realiza os cálculos
         return switch (op) {
-            case "+" -> num1 + num2;
-            case "-" -> num1 - num2;
-            case "*" -> num1 * num2;
-            case "/" -> num1 / num2;
-            case "^" -> Math.pow(num1, num2);
-            default -> -1;
+            case "+" -> num1 + num2; // soma
+            case "-" -> num1 - num2; // subtração
+            case "*" -> num1 * num2; // multiplicação
+            case "/" -> num1 / num2; // divisão
+            case "^" -> Math.pow(num1, num2); // potência
+            default -> throw new IllegalArgumentException("operador inválido.");
         };
     }
 
     private static double calculate(String c) { // limpa (com ‘pop’) a pilha até encontrar o par do char fechador e calcula
-        String pair = "";
-        double num1 = 0;
-        double num2 = 0;
-        String op = "";
-        double res;
+        String pair = ""; // par do fechador
+        double num1 = 0; // operando antes do operador: (num1 op num2) <- exemplo: 54 * 10 -> o num1 seria o 54
+        double num2 = 0; // operando depois do operador: (num1 op num2) <- exemplo: 54 * 10 -> o num2 seria o 10
+        String op = ""; // operador
+        double res; // resultado
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
         boolean assignedNum1 = false; // boolean para checar se foi encontrado o num1 antes do abre
         boolean assignedOperator = false; // boolean para checar se foi encontrado um operador antes do abre
-        boolean foundPair = false;
+        boolean foundPair = false; // boolean para checar se já chegou no par
 
         if (pilhaArray.size() > maxSizeReached) { // compara o tamanho atual da pilha e o maior tamanho atingido previamente
             setMaxSizeReached(pilhaArray.size()); // se o tamanho atual for maior que o maior anterior, altera o valor da variável maxSizeReached
         }
 
-        switch (c) {
+        switch (c) { // acha o par do fechador
             case ")" -> pair = "(";
             case "]" -> pair = "[";
             case "}" -> pair = "{";
-            default -> System.out.println("Invalid Element"); // se o char não for um fechador, retorna um erro
+            default -> System.out.println("Invalid Element"); // default para exceções (não é para cair aqui nunca)
         }
 
 
         //TODO: melhorar essa implementação (usando outros métodos) para reduzir complexidade do método (está funcionando, mas não é ideal)
-        while (!foundPair) {
+        while (!foundPair) { // enquanto não achar o par do fechador (no caso o abre)
             try {
-                if (pilhaArray.top().equals(pair)) {
+                if (pilhaArray.top().equals(pair)) { // encontrou o par
                     foundPair = true;
                 }
-                if ((foundPair && !assignedOperator) || (foundPair && !assignedNum1)) {
-                    throw new Exception();
+
+                if ((foundPair && !assignedOperator) || (foundPair && !assignedNum1)) { // se encontrou o par, porém num1, op ou num2 não
+                    throw new Exception();                                              // foram encontrados, retorna erro
+
                 } else {
                     if (isNumber(pilhaArray.top())) { // se o elemento for um número
                         if (assignedNum2) { // se o elemento for número e o num2 já fora usado
                             num1 = Double.parseDouble(pilhaArray.pop()); // coloca o outro número na variável num1
                             assignedNum1 = true;
+
                         } else { // se o num2 (número depois do operador) ainda não tiver sido alterado
                             num2 = Double.parseDouble(pilhaArray.pop()); // coloca o número atual na variável num2
                             assignedNum2 = true;
                         }
+
                     } else if (isOperator(pilhaArray.top())) { // se o elemento for um operador
                         op = pilhaArray.pop(); // coloca o operador na variável op
                         assignedOperator = true;
+
                     } else { // se não for número ou operador, continua avançando na pilha
                         pilhaArray.pop();
                     }
                 }
+
             } catch (Exception e) {
                 setErroSintaxe(true);
-                setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional)
-                return -1;
+                setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional,)
+                return -1; // retorna -1 genérico (caso o resultado do cálculo seja -1 mesmo, não vai estar acompanhado da mensagem de
+                            // erro de sintaxe)
             }
 
         }
@@ -118,7 +124,17 @@ public class Calculadora {
         return res;
     }
 
-    private static boolean checkOpenersAndClosers(String[] str) {
+    private static void clearCounters() { // limpa os contadores
+        setParentesesAbre(0);
+        setColchetesAbre(0);
+        setChavesAbre(0);
+        setParentesesFecha(0);
+        setColchetesFecha(0);
+        setChavesFecha(0);
+    }
+
+    // métodos de checagem
+    private static boolean checkOpenersAndClosers(String[] str) { // faz a checagem dos abres e fechas, usando contadores para comparar
         for (String s : str) {
             if (isOpener(s)) {
                 if (isParentesesAbre(s)) {
@@ -140,17 +156,6 @@ public class Calculadora {
         }
         return (parentesesAbre == parentesesFecha) && (chavesAbre == chavesFecha) && (colchetesAbre == colchetesFecha);
     }
-
-    private static void clearCounters() {
-        setParentesesAbre(0);
-        setColchetesAbre(0);
-        setChavesAbre(0);
-        setParentesesFecha(0);
-        setColchetesFecha(0);
-        setChavesFecha(0);
-    }
-
-    // métodos para checar qual abridor/fechador o elemento atual é
     private static boolean isCloser(String c) { // checa se o elemento é um fechador (de parenteses, chaves ou colchetes)
         return c.equals(")") || c.equals("]") || c.equals("}");
     }

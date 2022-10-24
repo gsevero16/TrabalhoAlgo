@@ -14,16 +14,17 @@ public class LeituraArqJava {
         Path path1 = Paths.get("expressoes2.txt");
         String[] phrase;
 
-
         try {
             reader = Files.newBufferedReader(path1, Charset.defaultCharset());
             String line;
-            int aux = 1;
+            int aux = 1; // número da expressão/equação atual, começando na 1 (primeira)
+
             while ((line = reader.readLine()) != null) {
-                String[] v = line.split("\n"); // divide a ‘string’ pelo espaço em branco
+                String[] v = line.split("\n"); // divide a ‘string’ pelas linhas (cada linha é uma expressão diferente)
                 for (String s : v) {
-                    phrase = s.split(" ");
-                    double result = Calculadora.fazOperacao(phrase);
+                    phrase = s.split(" "); // divide a 'string' pelos espaços em branco
+
+                    double result = Calculadora.fazOperacao(phrase); // calcula o resultado
 
                     if(Calculadora.isErroSintaxe()){ // se a equação apresentou erro de sintaxe
                         System.out.println("Expressão " + aux + " apresentou um erro de sintaxe.\n");
@@ -32,10 +33,9 @@ public class LeituraArqJava {
                         System.out.println("O resultado da expressão " + aux + " é: " + result + " - tamanho máximo da pilha: " + Calculadora.getMaxSizeReached() + "\n");
                     }
 
-                    Calculadora.setMaxSizeReached(0);
-                    Calculadora.setErroSintaxe(false);
+                    Calculadora.setMaxSizeReached(0); // reseta o tamanho máximo da pilha (para ir para a próxima expressão)
+                    Calculadora.setErroSintaxe(false); // reseta o estado de erro (caso tenha sido encontrado)
                     aux++;
-
                 }
             }
             reader.close();
