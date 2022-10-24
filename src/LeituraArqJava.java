@@ -28,7 +28,6 @@ public class LeituraArqJava {
                         removeSpace += t;
                     }
                     phraseWithoutSpace[i] = removeSpace;
-                    System.out.println(phraseWithoutSpace[i]);
                     i++;
                 }
             }
