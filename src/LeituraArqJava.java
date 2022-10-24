@@ -13,21 +13,22 @@ public class LeituraArqJava {
         BufferedReader reader;
         Path path1 = Paths.get("expressoes2.txt");
         String[] phrase = new String[200];
+        String removeSpace = "";
         String[] phraseWithoutSpace = new String[200];
 
         try {
             reader = Files.newBufferedReader(path1, Charset.defaultCharset());
             String line = null;
+            int i = 0;
             while ((line = reader.readLine()) != null) {
-                int i = 0;
                 String v[] = line.split("\n"); // divide a string pelo espaco em branco
                 for (String s : v) {
-                    String removeSpace = "";
                     phrase = s.split(" ");
                     for (String t : phrase) {
                         removeSpace += t;
                     }
                     phraseWithoutSpace[i] = removeSpace;
+                    removeSpace = "";
                     i++;
                 }
             }
@@ -38,6 +39,7 @@ public class LeituraArqJava {
 
         //para cada string, ele chama o metodo que faz a operação
         int aux = 1;
+
         for (String s : phraseWithoutSpace) {
             // apenas pra enumerar as operações
             int result = Calculadora.fazOperacao(s); // o tryparse é dentro do método
