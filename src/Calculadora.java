@@ -87,11 +87,10 @@ public class Calculadora {
         double num2 = 0;
         String op = "";
         double res;
+        boolean foundPair = false;
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
-
-        //TODO uma possibilidade para determinar se tem num1 operador num2 (olhar outro TODO)
-        boolean assignedNum1 = false;
-        boolean assignedOperator = false;
+        boolean assignedNum1 = false; // boolean para checar se foi encontrado o num1 antes do abre
+        boolean assignedOperator = false; // boolean para checar se foi encontrado um operador antes do abre
 
         if(pilhaArray.size() > maxSizeReached){ // compara o tamanho atual da pilha e o maior tamanho atingido previamente
             setMaxSizeReached(pilhaArray.size()); // se o tamanho atual for maior que o maior anterior, altera o valor da variável maxSizeReached
@@ -104,24 +103,41 @@ public class Calculadora {
             default -> System.out.println("Invalid Element"); // se o char não for um fechador, retorna um erro
         }
 
-        while(!pilhaArray.top().equals(pair)){
-            if(isNumber(pilhaArray.top())){ // se o elemento for um número
-                if(assignedNum2){ // se o elemento for número e o num2 já fora usado
-                    num1 = Double.parseDouble(pilhaArray.pop()); // coloca o outro número na variável num1
+        //TODO: ver por quê tá imprimindo vários erros de sintaxe em algumas equações
+        // acredito que de resto está ou correto, ou quase correto
+        while(!foundPair) {
+            try{
+                if(pilhaArray.top().equals(pair)){
+                    foundPair = true;
                 }
-
-                else{ // se o num2 (número depois do operador) ainda não tiver sido alterado
-                    num2 = Double.parseDouble(pilhaArray.pop()); // coloca o número atual na variável num2
-                    assignedNum2 = true;
+                if((foundPair && !assignedOperator) || (foundPair && !assignedNum1)){
+                    throw new Exception();
                 }
-            }
+                else{
+                    if(isNumber(pilhaArray.top())){ // se o elemento for um número
+                        if(assignedNum2){ // se o elemento for número e o num2 já fora usado
+                            num1 = Double.parseDouble(pilhaArray.pop()); // coloca o outro número na variável num1
+                            assignedNum1 = true;
+                        }
 
-            else if(isOperator(pilhaArray.top())) { // se o elemento for um operador
-                    op = pilhaArray.pop(); // coloca o operador na variável op
-            }
+                        else{ // se o num2 (número depois do operador) ainda não tiver sido alterado
+                            num2 = Double.parseDouble(pilhaArray.pop()); // coloca o número atual na variável num2
+                            assignedNum2 = true;
+                        }
+                    }
 
-            else{ // se não for número ou operador, continua avançando na pilha
-               pilhaArray.pop();
+                    else if(isOperator(pilhaArray.top())) { // se o elemento for um operador
+                        op = pilhaArray.pop(); // coloca o operador na variável op
+                        assignedOperator = true;
+                    }
+
+                    else{ // se não for número ou operador, continua avançando na pilha
+                        pilhaArray.pop();
+                    }
+                }
+            }catch (Exception e) {
+                System.out.println("Erro de sintaxe.");
+                return -1;
             }
 
         }
@@ -158,8 +174,7 @@ public class Calculadora {
         return (parentesesAbre == parentesesFecha) && (chavesAbre == chavesFecha) && (colchetesAbre == colchetesFecha);
     }
 
-    //TODO método para checar se tem num1, operador e num2 antes de encontrar outro abridor
-    // por exemplo: (54 * ) <- falta um número depois do 54, portanto deve dar erro de sintaxe
+
 
     private static void clearCounters(){
         setParentesesAbre(0);
