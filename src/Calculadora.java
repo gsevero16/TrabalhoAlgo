@@ -6,6 +6,8 @@ import java.util.EmptyStackException;
 public class Calculadora {
     private static final PilhaArray pilhaArray = new PilhaArray();
     private static int maxSizeReached = 0; // maior tamanho que a pilha atingiu
+    private static boolean erroSintaxe = false;
+    private static boolean foundPair = false;
 
     // contadores para checar se tem a mesma quantidade de abridores e fechadores
     private static int parentesesAbre = 0;
@@ -24,7 +26,7 @@ public class Calculadora {
             }
 
         }catch(Exception e){
-            System.out.println("Erro de sintaxe.");
+            setErroSintaxe(true);
             clearCounters(); // limpa os contadores
             return -1;
         }
@@ -36,7 +38,7 @@ public class Calculadora {
 
         for (String c : s){ // adiciona elementos à pilha até encontrar um fechador
             if(isCloser(c)){
-                res = findPairAndCalculate(c); // remove topo da lista até encontrar o par do fechador e calcula o que tiver no caminho
+                res = calculate(c); // remove topo da lista até encontrar o par do fechador e calcula o que tiver no caminho
                 pilhaArray.push(Double.toString(res)); // coloca o resultado de volta na pilha
             }
 
@@ -49,26 +51,7 @@ public class Calculadora {
         return res;
     }
 
-    private static boolean isCloser(String c){ // checa se o char é um fechador (de parenteses, chaves ou colchetes)
-        return c.equals(")") || c.equals("]") || c.equals("}");
-    }
 
-    private static boolean isOpener(String c){
-        return c.equals("(") || c.equals("[") || c.equals("{");
-    }
-
-    private static boolean isNumber(String string){ // checa se o char atual é um número
-        try {
-            Double.parseDouble(string);
-            return true;
-          } catch(NumberFormatException e){
-            return false;
-          }
-    }
-
-    private static boolean isOperator(String string){ // checa se o char atual é um operador
-        return string.equals("+") || string.equals("-") || string.equals("*") || string.equals("/") || string.equals("^");
-    }
 
     private static double calculator(double num1, double num2, String op){ // realiza os cálculos
         return switch (op) {
@@ -81,13 +64,12 @@ public class Calculadora {
         };
     }
 
-    private static double findPairAndCalculate(String c){ // limpa (com ‘pop’) a pilha até encontrar o par do char fechador e calcula
-        String pair = "";
+    private static double calculate(String c){ // limpa (com ‘pop’) a pilha até encontrar o par do char fechador e calcula
+        String pair = findPair(c);
         double num1 = 0;
         double num2 = 0;
         String op = "";
         double res;
-        boolean foundPair = false;
         boolean assignedNum2 = false; // boolean para checar se o num2 (segundo operando) já foi modificado
         boolean assignedNum1 = false; // boolean para checar se foi encontrado o num1 antes do abre
         boolean assignedOperator = false; // boolean para checar se foi encontrado um operador antes do abre
@@ -95,22 +77,15 @@ public class Calculadora {
         if(pilhaArray.size() > maxSizeReached){ // compara o tamanho atual da pilha e o maior tamanho atingido previamente
             setMaxSizeReached(pilhaArray.size()); // se o tamanho atual for maior que o maior anterior, altera o valor da variável maxSizeReached
         }
+        
 
-        switch (c) {
-            case ")" -> pair = "(";
-            case "]" -> pair = "[";
-            case "}" -> pair = "{";
-            default -> System.out.println("Invalid Element"); // se o char não for um fechador, retorna um erro
-        }
-
-        //TODO: ver por quê tá imprimindo vários erros de sintaxe em algumas equações
-        // acredito que de resto está ou correto, ou quase correto
-        while(!foundPair) {
+        //TODO: melhorar essa implementação (usando outros métodos) para reduzir complexidade do método (está funcionando, mas não é ideal)
+        while(isFoundPair()) {
             try{
                 if(pilhaArray.top().equals(pair)){
-                    foundPair = true;
+                    setFoundPair(false);
                 }
-                if((foundPair && !assignedOperator) || (foundPair && !assignedNum1)){
+                if((isFoundPair() && !assignedOperator) || (isFoundPair() && !assignedNum1)){
                     throw new Exception();
                 }
                 else{
@@ -136,7 +111,8 @@ public class Calculadora {
                     }
                 }
             }catch (Exception e) {
-                System.out.println("Erro de sintaxe.");
+                setErroSintaxe(true);
+                setMaxSizeReached(0); // se der erro, deixa o tamanho máximo atingido como 0 (isso é opcional)
                 return -1;
             }
 
@@ -173,6 +149,17 @@ public class Calculadora {
         }
         return (parentesesAbre == parentesesFecha) && (chavesAbre == chavesFecha) && (colchetesAbre == colchetesFecha);
     }
+    
+    private static String findPair(String s){
+        String pair = "";
+        switch (s) {
+            case ")" -> pair = "(";
+            case "]" -> pair = "[";
+            case "}" -> pair = "{";
+            default -> System.out.println("Invalid Element"); // se o char não for um fechador, retorna um erro
+        }
+        return pair;
+    }
 
 
 
@@ -185,6 +172,27 @@ public class Calculadora {
         setChavesFecha(0);
     }
 
+    // métodos para checar qual abridor/fechador o elemento atual é
+    private static boolean isCloser(String c){ // checa se o elemento é um fechador (de parenteses, chaves ou colchetes)
+        return c.equals(")") || c.equals("]") || c.equals("}");
+    }
+
+    private static boolean isOpener(String c){ // checa se o elemento é um abridor (de parentes, chaves ou colchetes)
+        return c.equals("(") || c.equals("[") || c.equals("{");
+    }
+
+    private static boolean isNumber(String string){ // checa se o char atual é um número
+        try {
+            Double.parseDouble(string);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+
+    private static boolean isOperator(String string){ // checa se o char atual é um operador
+        return string.equals("+") || string.equals("-") || string.equals("*") || string.equals("/") || string.equals("^");
+    }
     private static boolean isParentesesAbre(String str){
         return str.equals("(");
     }
@@ -229,5 +237,21 @@ public class Calculadora {
 
     public static void setChavesFecha(int chavesFecha) {
         Calculadora.chavesFecha = chavesFecha;
+    }
+
+    public static boolean isErroSintaxe() {
+        return erroSintaxe;
+    }
+
+    public static void setErroSintaxe(boolean erroSintaxe) {
+        Calculadora.erroSintaxe = erroSintaxe;
+    }
+
+    public static boolean isFoundPair() {
+        return foundPair;
+    }
+
+    public static void setFoundPair(boolean foundPair) {
+        Calculadora.foundPair = foundPair;
     }
 }
